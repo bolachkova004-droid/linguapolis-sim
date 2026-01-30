@@ -1,0 +1,51 @@
+{
+  "characters": [
+    {
+      "id": "techie",
+      "name": "Alex Code",
+      "avatar": "https://via.placeholder.com/120x120/4f46e5/ffffff?text=TECHIE",
+      "description": "Future developer. Logic & clean code.",
+      "startingStats": {
+        "confidence": 25,
+        "vocabulary": 35,
+        "fluency": 15
+      },
+      "preferredChunks": ["On the same page", "Makes sense", "It tracks"]
+    },
+    {
+      "id": "creative",
+      "name": "Mia Design", 
+      "avatar": "https://via.placeholder.com/120x120/ec4899/ffffff?text=CREATIVE",
+      "description": "Content creator. Vibe & style master.",
+      "startingStats": {
+        "confidence": 40,
+        "vocabulary": 20,
+        "fluency": 25
+      },
+      "preferredChunks": ["Low-key", "Fair enough", "Looking forward"]
+    },
+    {
+      "id": "executive",
+      "name": "James Corp",
+      "avatar": "https://via.placeholder.com/120x120/10b981/ffffff?text=EXEC",
+      "description": "Career climber. Meetings pro.",
+      "startingStats": {
+        "confidence": 35,
+        "vocabulary": 25,
+        "fluency": 20
+      },
+      "preferredChunks": ["Actually", "The point is", "To be honest"]
+    }
+  ],
+  "quests": {
+    "residents_chat_01": {
+      "title": "The First Impression",
+      "description": "Introduce yourself to neighbors (use 1 chunk)",
+      "requiredChunks": ["Just moved in", "Looking forward", "Low-key nervous"],
+      "reward": {
+        "confidence": 15,
+        "coins": 50
+      }
+    }
+  }
+}
