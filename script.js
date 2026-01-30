@@ -93,7 +93,8 @@ let gameState = {
 };
 
 // Квесты (ты меняешь здесь!)
-const quests = {
+// В самом начале файла замени объект quests на:
+const quests = gameState.quests || {
     "residents_chat_01": {
         title: "The First Impression",
         description: "Introduce yourself to neighbors (use 1 chunk)",
@@ -101,6 +102,7 @@ const quests = {
         reward: { confidence: 15, coins: 50 }
     }
 };
+
 
 // Инициализация
 document.addEventListener('DOMContentLoaded', () => {
