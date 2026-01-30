@@ -56,7 +56,10 @@ function showCharacterSelect() {
     `;
     
     // Обработчики выбора персонажа
-    document.querySelectorAll('.char-option').forEach(option => {
+    document.addEventListener('DOMContentLoaded', () => {
+    loadCharacters(); // Показываем выбор персонажа первым
+});
+
         option.addEventListener('click', () => {
             selectCharacter(option.dataset.id);
         });
