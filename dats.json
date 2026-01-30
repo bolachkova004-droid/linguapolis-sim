@@ -1,0 +1,40 @@
+{
+  "characters": [
+    {
+      "id": "techie",
+      "name": "Alex Code",
+      "avatar": "assets/techie.jpg",
+      "description": "Future developer. Loves logic & clean code.",
+      "startingStats": {
+        "confidence": 25,
+        "vocabulary": 35,
+        "fluency": 15
+      },
+      "preferredChunks": ["On the same page", "Makes sense", "It tracks"]
+    },
+    {
+      "id": "creative",
+      "name": "Mia Design",
+      "avatar": "assets/creative.jpg", 
+      "description": "Content creator. Master of vibe & style.",
+      "startingStats": {
+        "confidence": 40,
+        "vocabulary": 20,
+        "fluency": 25
+      },
+      "preferredChunks": ["Low-key", "Fair enough", "Looking forward"]
+    },
+    {
+      "id": "professional",
+      "name": "James Corp",
+      "avatar": "assets/professional.jpg",
+      "description": "Career climber. Meetings & networking.",
+      "startingStats": {
+        "confidence": 35,
+        "vocabulary": 25,
+        "fluency": 20
+      },
+      "preferredChunks": ["Actually", "The point is", "To be honest"]
+    }
+  ]
+}
