@@ -1,3 +1,83 @@
+// Загружаем персонажей
+let currentCharacter = null;
+let characters = [];
+
+// Добавь после function setupEventListeners()
+async function loadCharacters() {
+    try {
+        const response = await fetch('data.json');
+        const data = await response.json();
+        characters = data.characters;
+        showCharacterSelect();
+    } catch (error) {
+        console.log('Using default characters');
+        characters = [
+            {
+                id: "techie",
+                name: "Alex Code",
+                avatar: "https://via.placeholder.com/120/4f46e5/ffffff?text=TECH",
+                description: "Future developer",
+                startingStats: { confidence: 25, vocabulary: 35, fluency: 15 }
+            },
+            {
+                id: "creative", 
+                name: "Mia Design",
+                avatar: "https://via.placeholder.com/120/ec4899/ffffff?text=CREATIVE",
+                description: "Content creator",
+                startingStats: { confidence: 40, vocabulary: 20, fluency: 25 }
+            },
+            {
+                id: "professional",
+                name: "James Corp",
+                avatar: "https://via.placeholder.com/120/10b981/ffffff?text=PRO",
+                description: "Career climber",
+                startingStats: { confidence: 35, vocabulary: 25, fluency: 20 }
+            }
+        ];
+        showCharacterSelect();
+    }
+}
+
+function showCharacterSelect() {
+    const avatar = document.querySelector('.avatar');
+    avatar.innerHTML = `
+        <div class="character-select">
+            <h3>Choose your Linguapolis Sim</h3>
+            <div class="character-grid">
+                ${characters.map(char => `
+                    <div class="char-option" data-id="${char.id}">
+                        <img src="${char.avatar}" alt="${char.name}">
+                        <h4>${char.name}</h4>
+                        <p>${char.description}</p>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+    
+    // Обработчики выбора персонажа
+    document.querySelectorAll('.char-option').forEach(option => {
+        option.addEventListener('click', () => {
+            selectCharacter(option.dataset.id);
+        });
+    });
+}
+
+function selectCharacter(characterId) {
+    currentCharacter = characters.find(c => c.id === characterId);
+    gameState.confidence = currentCharacter.startingStats.confidence;
+    gameState.vocabulary = currentCharacter.startingStats.vocabulary;
+    gameState.fluency = currentCharacter.startingStats.fluency;
+    
+    document.querySelector('.avatar').innerHTML = `
+        <img src="${currentCharacter.avatar}" alt="${currentCharacter.name}">
+        <div class="char-name">${currentCharacter.name}</div>
+    `;
+    
+    updateStats();
+    loadQuest();
+}
+
 // Game state
 let gameState = {
     confidence: 30,
