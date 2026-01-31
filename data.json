@@ -14,7 +14,7 @@
     },
     {
       "id": "creative",
-      "name": "Mia Design", 
+      "name": "Mia Design",
       "avatar": "https://via.placeholder.com/120x120/ec4899/ffffff?text=CREATIVE",
       "description": "Content creator. Vibe & style master.",
       "startingStats": {
@@ -44,7 +44,8 @@
       "requiredChunks": ["Just moved in", "Looking forward", "Low-key nervous"],
       "reward": {
         "confidence": 15,
-        "coins": 50
+        "coins": 50,
+        "xp": 35
       }
     }
   }
