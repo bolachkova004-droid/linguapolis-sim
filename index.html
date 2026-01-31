@@ -1,56 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Linguapolis Sim</title>
-    <link rel="stylesheet" href="style.css?v=2"> <!-- ?v=2 заставит браузер обновиться -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Linguapolis Sim</title>
+  <link rel="stylesheet" href="style.css?v=3" />
 </head>
 <body>
-    <div id="game-container">
-        <!-- Слой выбора персонажа (виден в начале) -->
-        <div id="char-selection-overlay">
-            <div class="selection-card">
-                <h1>Choose your Linguapolis Sim</h1>
-                <p>Select your path to master English</p>
-                <div id="char-grid"></div>
-            </div>
+  <div id="game-container">
+
+    <!-- Character selection overlay -->
+    <div id="char-selection-overlay">
+      <div class="selection-card">
+        <h1>Choose your Linguapolis Sim</h1>
+        <p>Select your path to master English</p>
+        <div id="char-grid"></div>
+      </div>
+    </div>
+
+    <!-- Main UI -->
+    <main id="main-ui" style="display: none;">
+      <aside class="left-panel">
+        <div class="profile-card">
+          <div id="player-avatar"></div>
+          <h2 id="player-name">Name</h2>
+          <p id="player-desc">Description</p>
+
+          <!-- Progress meta -->
+          <div class="meta">
+            <div class="meta-item">Level: <span id="player-level">1</span></div>
+            <div class="meta-item">XP: <span id="player-xp">0</span>/<span id="player-xp-next">100</span></div>
+            <div class="meta-item">Coins: <span id="player-coins">0</span> 🪙</div>
+          </div>
+
+          <button id="btn-reset" class="ghost">Reset</button>
         </div>
 
-        <!-- Основной интерфейс -->
-        <main id="main-ui" style="display: none;">
-            <aside class="left-panel">
-                <div class="profile-card">
-                    <div id="player-avatar"></div>
-                    <h2 id="player-name">Name</h2>
-                    <p id="player-desc">Description</p>
-                </div>
-                <div class="stats-card">
-                    <div class="stat-row">
-                        <span>Confidence</span>
-                        <div class="progress-bg"><div id="bar-confidence" class="progress-fill"></div></div>
-                    </div>
-                    <div class="stat-row">
-                        <span>Vocabulary</span>
-                        <div class="progress-bg"><div id="bar-vocab" class="progress-fill"></div></div>
-                    </div>
-                </div>
-            </aside>
+        <div class="stats-card">
+          <div class="stat-row">
+            <span>Confidence</span>
+            <div class="progress-bg"><div id="bar-confidence" class="progress-fill"></div></div>
+          </div>
 
-            <section class="chat-section">
-                <div class="header">Linden Court Chat</div>
-                <div id="chat-box"></div>
-            </section>
+          <div class="stat-row">
+            <span>Vocabulary</span>
+            <div class="progress-bg"><div id="bar-vocab" class="progress-fill"></div></div>
+          </div>
 
-            <aside class="quest-section">
-                <div class="quest-card">
-                    <h3>Current Quest</h3>
-                    <div id="quest-content"></div>
-                </div>
-            </aside>
-        </main>
-    </div>
-    <script src="script.js?v=2"></script>
+          <div class="stat-row">
+            <span>Fluency</span>
+            <div class="progress-bg"><div id="bar-fluency" class="progress-fill"></div></div>
+          </div>
+
+          <button id="btn-lesson">✅ Finish lesson (+XP)</button>
+        </div>
+      </aside>
+
+      <section class="chat-section">
+        <div class="header">Linden Court Chat</div>
+        <div id="chat-box"></div>
+      </section>
+
+      <aside class="quest-section">
+        <div class="quest-card">
+          <h3>Current Quest</h3>
+          <div id="quest-content"></div>
+        </div>
+      </aside>
+    </main>
+
+  </div>
+
+  <script src="script.js?v=3"></script>
 </body>
 </html>
 
