@@ -1,122 +1,246 @@
 :root {
-    --bg: #f0f2f5;
-    --panel: #ffffff;
-    --primary: #4f46e5;
-    --accent: #8b5cf6;
-    --text: #1e293b;
+  --bg: #f0f2f5;
+  --panel: #ffffff;
+  --primary: #4f46e5;
+  --accent: #8b5cf6;
+  --text: #1e293b;
 }
 
 body {
-    font-family: 'Segoe UI', Roboto, sans-serif;
-    background-color: var(--bg);
-    color: var(--text);
-    margin: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #game-container {
-    width: 95vw;
-    height: 90vh;
-    max-width: 1200px;
-    position: relative;
+  width: 95vw;
+  height: 90vh;
+  max-width: 1200px;
+  position: relative;
 }
 
-/* Окно выбора */
+/* Selection overlay */
 #char-selection-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(255,255,255,0.8);
-    backdrop-filter: blur(10px);
-    z-index: 100;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.82);
+  backdrop-filter: blur(10px);
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .selection-card {
-    background: white;
-    padding: 40px;
-    border-radius: 30px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.1);
-    text-align: center;
+  background: white;
+  padding: 40px;
+  border-radius: 30px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.10);
+  text-align: center;
+  width: min(860px, 92vw);
 }
 
 #char-grid {
-    display: flex;
-    gap: 20px;
-    margin-top: 30px;
+  display: flex;
+  gap: 20px;
+  margin-top: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .char-btn {
-    padding: 20px;
-    background: #f8fafc;
-    border: 2px solid #e2e8f0;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: 0.3s;
-    width: 150px;
+  padding: 18px;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+  width: 180px;
+  user-select: none;
 }
 
 .char-btn:hover {
-    border-color: var(--primary);
-    transform: translateY(-5px);
+  border-color: var(--primary);
+  transform: translateY(-5px);
 }
 
-/* Интерфейс игры */
+/* Main UI layout */
 #main-ui {
-    display: grid;
-    grid-template-columns: 280px 1fr 300px;
-    gap: 20px;
-    height: 100%;
+  display: grid;
+  grid-template-columns: 280px 1fr 300px;
+  gap: 20px;
+  height: 100%;
 }
 
 .profile-card, .stats-card, .chat-section, .quest-card {
-    background: var(--panel);
-    border-radius: 24px;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-    padding: 20px;
+  background: var(--panel);
+  border-radius: 24px;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+  padding: 20px;
+}
+
+.profile-card button.ghost {
+  margin-top: 12px;
 }
 
 #player-avatar {
-    width: 100px;
-    height: 100px;
-    background: #e2e8f0;
-    border-radius: 50%;
-    margin: 0 auto 15px;
-    overflow: hidden;
+  width: 100px;
+  height: 100px;
+  background: #e2e8f0;
+  border-radius: 24px;
+  margin: 0 auto 15px;
+  overflow: hidden;
 }
 
 .progress-bg {
-    height: 10px;
-    background: #e2e8f0;
-    border-radius: 5px;
-    margin-top: 5px;
+  height: 10px;
+  background: #e2e8f0;
+  border-radius: 5px;
+  margin-top: 5px;
 }
 
 .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--primary), var(--accent));
-    border-radius: 5px;
-    width: 0%;
-    transition: 1s;
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  border-radius: 5px;
+  width: 0%;
+  transition: 0.6s;
+}
+
+/* Chat */
+.chat-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chat-section .header {
+  font-weight: 800;
+  letter-spacing: 0.2px;
 }
 
 #chat-box {
-    height: 400px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-right: 6px;
 }
 
 .bubble {
-    padding: 12px 16px;
-    border-radius: 18px;
-    max-width: 80%;
+  padding: 12px 16px;
+  border-radius: 18px;
+  max-width: 80%;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.06);
+  animation: popIn 0.18s ease-out;
+  line-height: 1.35;
+  word-wrap: break-word;
+}
+
+@keyframes popIn {
+  from { transform: translateY(6px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
 .bubble.player { background: var(--primary); color: white; align-self: flex-end; }
 .bubble.npc { background: #e2e8f0; align-self: flex-start; }
+
+/* Quest card */
+.quest-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.quest-card h3 { margin: 0; }
+
+/* Form elements */
+textarea, select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: var(--text);
+  font-size: 14px;
+  outline: none;
+}
+
+textarea {
+  min-height: 90px;
+  resize: vertical;
+  margin-top: 10px;
+}
+
+textarea:focus, select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+  background: #ffffff;
+}
+
+/* Buttons */
+button {
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: none;
+  cursor: pointer;
+  background: var(--primary);
+  color: white;
+  font-weight: 700;
+  transition: 0.2s;
+}
+
+button:hover {
+  filter: brightness(0.95);
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+button.ghost {
+  background: transparent;
+  border: 2px solid #e2e8f0;
+  color: var(--text);
+}
+
+/* Meta (Level/XP/Coins) */
+.meta {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #eef2f7;
+  font-weight: 700;
+}
+
+.meta-item {
+  display: flex;
+  justify-content: space-between;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 10px 12px;
+}
+
+/* Mobile layout */
+@media (max-width: 980px) {
+  body { align-items: flex-start; padding: 14px 0; height: auto; }
+  #game-container { height: auto; }
+  #main-ui {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+  }
+}
