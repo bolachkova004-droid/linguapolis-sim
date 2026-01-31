@@ -42,18 +42,35 @@ function showCharacterSelect() {
     const avatar = document.querySelector('.avatar');
     avatar.innerHTML = `
         <div class="character-select">
-            <h3>Choose your Linguapolis Sim</h3>
-            <div class="character-grid">
-                ${characters.map(char => `
-                    <div class="char-option" data-id="${char.id}">
-                        <img src="${char.avatar}" alt="${char.name}">
-                        <h4>${char.name}</h4>
-                        <p>${char.description}</p>
+            <h3 style="margin-bottom: 20px;">Choose your Linguapolis Sim</h3>
+            <div class="character-grid" style="display: flex; flex-direction: column; gap: 12px;">
+                ${characters.map((char, index) => `
+                    <div class="char-option" data-id="${char.id}" style="cursor: pointer; padding: 16px; background: rgba(60,60,80,0.7); border-radius: 12px; border: 2px solid transparent; transition: all 0.3s;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #${index === 0 ? '4f46e5' : index === 1 ? 'ec4899' : '10b981'}, #${index === 0 ? '3730a3' : index === 1 ? 'be185d' : '059669'}); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; font-size: 14px;">
+                                ${char.id.toUpperCase()}
+                            </div>
+                            <div>
+                                <h4 style="margin: 0; font-size: 16px;">${char.name}</h4>
+                                <p style="margin: 4px 0 0 0; font-size: 12px; opacity: 0.8;">${char.description}</p>
+                            </div>
+                        </div>
                     </div>
                 `).join('')}
             </div>
         </div>
     `;
+    
+    // Клик по персонажу
+    document.querySelectorAll('.char-option').forEach(option => {
+        option.addEventListener('click', () => {
+            option.style.borderColor = '#3b82f6';
+            option.style.background = 'rgba(59,130,246,0.2)';
+            setTimeout(() => selectCharacter(option.dataset.id), 200);
+        });
+    });
+}
+
     
     // Обработчики выбора персонажа
     document.addEventListener('DOMContentLoaded', () => {
