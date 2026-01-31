@@ -3,59 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Linguapolis - Level Up Your English</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Linguapolis Sim</title>
+    <link rel="stylesheet" href="style.css?v=2"> <!-- ?v=2 заставит браузер обновиться -->
 </head>
 <body>
-    <!-- Левая панель: Персонаж -->
-    <div class="character-panel">
-        <div class="avatar" id="avatar">
-            <img src="assets/default-avatar.jpg" alt="Your Sim">
-        </div>
-        <div class="stats">
-            <div class="stat">
-                <span>Confidence</span>
-                <div class="bar" id="confidence-bar"><div></div></div>
-                <span id="confidence">30%</span>
-            </div>
-            <div class="stat">
-                <span>Vocabulary</span>
-                <div class="bar" id="vocab-bar"><div></div></div>
-                <span id="vocab">20%</span>
-            </div>
-            <div class="stat">
-                <span>Fluency</span>
-                <div class="bar" id="fluency-bar"><div></div></div>
-                <span id="fluency">10%</span>
+    <div id="game-container">
+        <!-- Слой выбора персонажа (виден в начале) -->
+        <div id="char-selection-overlay">
+            <div class="selection-card">
+                <h1>Choose your Linguapolis Sim</h1>
+                <p>Select your path to master English</p>
+                <div id="char-grid"></div>
             </div>
         </div>
-    </div>
 
-    <!-- Центр: Карта города -->
-    <div class="game-area">
-        <div class="location" id="current-location">
-            <h2>Linden Court Chat</h2>
-            <div class="chat-messages" id="chat-messages"></div>
-        </div>
-    </div>
+        <!-- Основной интерфейс -->
+        <main id="main-ui" style="display: none;">
+            <aside class="left-panel">
+                <div class="profile-card">
+                    <div id="player-avatar"></div>
+                    <h2 id="player-name">Name</h2>
+                    <p id="player-desc">Description</p>
+                </div>
+                <div class="stats-card">
+                    <div class="stat-row">
+                        <span>Confidence</span>
+                        <div class="progress-bg"><div id="bar-confidence" class="progress-fill"></div></div>
+                    </div>
+                    <div class="stat-row">
+                        <span>Vocabulary</span>
+                        <div class="progress-bg"><div id="bar-vocab" class="progress-fill"></div></div>
+                    </div>
+                </div>
+            </aside>
 
-    <!-- Правая панель: Квесты -->
-    <div class="quest-panel">
-        <h3>Current Quest</h3>
-        <div class="quest" id="current-quest">
-            <h4>The First Impression</h4>
-            <p>Introduce yourself to neighbors (use 1 chunk)</p>
-            <div class="chunks">
-                <button class="chunk-btn" data-chunk="Just moved in">Just moved in...</button>
-                <button class="chunk-btn" data-chunk="Looking forward">Looking forward...</button>
-                <button class="chunk-btn" data-chunk="Low-key nervous">Low-key nervous...</button>
-            </div>
-            <textarea id="message-input" placeholder="Type your message here..."></textarea>
-            <button id="send-message">Send Message</button>
-        </div>
-        <div class="achievements" id="achievements"></div>
-    </div>
+            <section class="chat-section">
+                <div class="header">Linden Court Chat</div>
+                <div id="chat-box"></div>
+            </section>
 
-    <script src="script.js"></script>
+            <aside class="quest-section">
+                <div class="quest-card">
+                    <h3>Current Quest</h3>
+                    <div id="quest-content"></div>
+                </div>
+            </aside>
+        </main>
+    </div>
+    <script src="script.js?v=2"></script>
 </body>
 </html>
+
