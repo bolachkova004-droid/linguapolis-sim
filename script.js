@@ -1,16 +1,15 @@
-const STORAGE_KEY = "linguapolis_save_v1";
+const STORAGE_KEY = "linguapolis_save_v2";
 
 let gameData = null;
 let state = null;
 
-// ---------- helpers ----------
 function xpToNext(level) {
   return 100 + (level - 1) * 40;
 }
-
 function clamp01to100(n) {
   return Math.max(0, Math.min(100, n));
 }
+function $(id) { return document.getElementById(id); }
 
 function loadState() {
   try {
@@ -20,20 +19,14 @@ function loadState() {
     return null;
   }
 }
-
 function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
 async function loadGameData() {
-  // IMPORTANT: data.json must sit next to index.html
   const res = await fetch("./data.json", { cache: "no-store" });
   if (!res.ok) throw new Error("Cannot load data.json");
   return await res.json();
-}
-
-function $(id) {
-  return document.getElementById(id);
 }
 
 function escapeHtml(str) {
@@ -45,12 +38,43 @@ function escapeHtml(str) {
     .replaceAll("'", "&#039;");
 }
 
-// ---------- UI ----------
+function isVideo(path) {
+  return /\.(mp4|webm)$/i.test(path || "");
+}
+function isImage(path) {
+  return /\.(png|jpg|jpeg|webp|gif)$/i.test(path || "");
+}
+
+function renderMedia(path, size = 72, rounded = 999) {
+  if (!path) {
+    return `<div style="width:${size}px;height:${size}px;border-radius:${rounded}px;background:#e2e8f0;margin:0 auto 10px;"></div>`;
+  }
+
+  if (isVideo(path)) {
+    return `
+      <video
+        src="${path}"
+        autoplay
+        loop
+        muted
+        playsinline
+        preload="metadata"
+        style="width:${size}px;height:${size}px;border-radius:${rounded}px;display:block;margin:0 auto 10px;object-fit:cover;background:#e2e8f0;"
+      ></video>
+    `;
+  }
+
+  if (isImage(path)) {
+    return `<img src="${path}" alt="" style="width:${size}px;height:${size}px;border-radius:${rounded}px;display:block;margin:0 auto 10px;object-fit:cover;background:#e2e8f0;">`;
+  }
+
+  return `<div style="width:${size}px;height:${size}px;border-radius:${rounded}px;background:#e2e8f0;margin:0 auto 10px;"></div>`;
+}
+
 function showMainUI() {
   $("char-selection-overlay").style.display = "none";
   $("main-ui").style.display = "grid";
 }
-
 function showSelectionUI() {
   $("char-selection-overlay").style.display = "flex";
   $("main-ui").style.display = "none";
@@ -64,12 +88,8 @@ function renderCharacterGrid() {
     const btn = document.createElement("div");
     btn.className = "char-btn";
 
-    const avatarHtml = c.avatar
-      ? `<img src="${c.avatar}" alt="${escapeHtml(c.name)}" style="width:72px;height:72px;border-radius:50%;display:block;margin:0 auto 10px;object-fit:cover;">`
-      : `<div style="width:72px;height:72px;background:var(--primary);border-radius:50%;margin:0 auto 10px;"></div>`;
-
     btn.innerHTML = `
-      ${avatarHtml}
+      ${renderMedia(c.avatar, 78, 999)}
       <strong>${escapeHtml(c.name)}</strong><br>
       <small>${escapeHtml(c.description || "")}</small>
     `;
@@ -88,7 +108,10 @@ function renderProfile() {
 
   const avatarBox = $("player-avatar");
   avatarBox.innerHTML = char.avatar
-    ? `<img src="${char.avatar}" alt="${escapeHtml(char.name)}" style="width:100%;height:100%;object-fit:cover;">`
+    ? (isVideo(char.avatar)
+        ? `<video src="${char.avatar}" autoplay loop muted playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;"></video>`
+        : `<img src="${char.avatar}" alt="${escapeHtml(char.name)}" style="width:100%;height:100%;object-fit:cover;">`
+      )
     : "";
 
   $("bar-confidence").style.width = clamp01to100(state.stats.confidence) + "%";
@@ -107,7 +130,6 @@ function appendChatBubble(text, who = "player") {
   box.scrollTop = box.scrollHeight;
 }
 
-// ---------- game logic ----------
 function newStateForCharacter(characterId) {
   const char = gameData.characters.find((x) => x.id === characterId);
   const starting = char?.startingStats || { confidence: 25, vocabulary: 25, fluency: 10 };
@@ -160,7 +182,6 @@ function applyReward(reward) {
 function renderQuest() {
   const questId = state.currentQuestId;
   const quest = questId ? gameData.quests?.[questId] : null;
-
   const content = $("quest-content");
 
   if (!quest) {
@@ -176,28 +197,27 @@ function renderQuest() {
     .join("");
 
   const likes = (char?.preferredChunks || [])
-    .map((c) => `<span style="display:inline-block;margin:6px 6px 0 0;padding:6px 10px;border-radius:999px;background:#f8fafc;border:1px solid #e2e8f0;font-size:12px;">${escapeHtml(c)}</span>`)
+    .map((c) => `<span class="pill">${escapeHtml(c)}</span>`)
     .join("");
 
   content.innerHTML = `
-    <h4 style="margin:0 0 6px;">${escapeHtml(quest.title)}</h4>
-    <p style="margin:0 0 10px;opacity:.85;">${escapeHtml(quest.description)}</p>
+    <h4 class="quest-title">${escapeHtml(quest.title)}</h4>
+    <p class="quest-desc">${escapeHtml(quest.description)}</p>
 
-    <div style="margin:8px 0 10px;">
-      <div style="font-weight:800;margin-bottom:6px;">Your sim likes:</div>
+    <div class="likes">
+      <div class="likes-title">Your sim likes:</div>
       <div>${likes || "<span style='opacity:.7;'>No preferences yet</span>"}</div>
     </div>
 
-    <label style="display:block;margin:8px 0 6px;">Pick a chunk:</label>
-    <select id="chunk-select" ${isDone ? "disabled" : ""}>
-      ${options}
-    </select>
+    <label class="label">Pick a chunk:</label>
+    <select id="chunk-select" ${isDone ? "disabled" : ""}>${options}</select>
 
     <textarea id="msg-input" placeholder="Type your message..." ${isDone ? "disabled" : ""}></textarea>
     <button id="btn-send" ${isDone ? "disabled" : ""}>Send</button>
 
-    <div id="quest-feedback" style="margin-top:10px;opacity:.85;"></div>
-    <div style="margin-top:10px;opacity:.8;font-size:13px;">
+    <div id="quest-feedback" class="hint"></div>
+
+    <div class="reward">
       Reward: ${quest.reward?.confidence ? `+${quest.reward.confidence} Confidence` : ""} 
       ${quest.reward?.coins ? ` • +${quest.reward.coins} Coins` : ""} 
       • +XP
@@ -210,14 +230,10 @@ function renderQuest() {
   $("btn-send").addEventListener("click", () => {
     const typed = $("msg-input").value.trim();
     const chunk = $("chunk-select").value;
-
     if (!typed) return;
 
     appendChatBubble(typed, "player");
-
-    setTimeout(() => {
-      appendChatBubble("Welcome! Happy to have you here.", "npc");
-    }, 700);
+    setTimeout(() => appendChatBubble("Welcome! Happy to have you here.", "npc"), 600);
 
     const ok = typed.toLowerCase().includes(chunk.toLowerCase());
     if (!ok) {
@@ -235,17 +251,13 @@ function renderQuest() {
   });
 }
 
-// ---------- demo buttons ----------
 function attachButtons() {
-  const resetBtn = $("btn-reset");
-  resetBtn.addEventListener("click", () => {
+  $("btn-reset").addEventListener("click", () => {
     localStorage.removeItem(STORAGE_KEY);
     location.reload();
   });
 
-  const lessonBtn = $("btn-lesson");
-  lessonBtn.addEventListener("click", () => {
-    // quick demo reward for a lesson
+  $("btn-lesson").addEventListener("click", () => {
     applyReward({ xp: 35, coins: 10 });
     saveState();
     renderProfile();
@@ -253,37 +265,15 @@ function attachButtons() {
   });
 }
 
-// ---------- boot ----------
 document.addEventListener("DOMContentLoaded", async () => {
-  try {
-    gameData = await loadGameData();
-  } catch (e) {
-    console.error(e);
-    // If data.json is missing, the page still works (fallback)
-    gameData = {
-      characters: [
-        { id: "techie", name: "Alex Code", description: "Tech Enthusiast", startingStats: { confidence: 30, vocabulary: 40, fluency: 15 }, preferredChunks: [] },
-        { id: "creative", name: "Mia Design", description: "Creative Soul", startingStats: { confidence: 50, vocabulary: 20, fluency: 25 }, preferredChunks: [] },
-        { id: "executive", name: "James Corp", description: "Business Pro", startingStats: { confidence: 40, vocabulary: 30, fluency: 20 }, preferredChunks: [] }
-      ],
-      quests: {
-        residents_chat_01: {
-          title: "The First Impression",
-          description: "Introduce yourself to neighbors (use 1 chunk)",
-          requiredChunks: ["Low-key"],
-          reward: { confidence: 15, coins: 50, xp: 35 }
-        }
-      }
-    };
-  }
-
+  gameData = await loadGameData();
   attachButtons();
 
   const saved = loadState();
-  if (saved?.selectedCharacterId) {
-    restoreGame(saved);
-  } else {
+  if (saved?.selectedCharacterId) restoreGame(saved);
+  else {
     showSelectionUI();
     renderCharacterGrid();
   }
 });
+
