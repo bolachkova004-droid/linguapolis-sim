@@ -1,40 +1,100 @@
 {
   "characters": [
     {
-      "id": "techie",
-      "name": "Alex Code",
-      "avatar": "https://via.placeholder.com/120x120/4f46e5/ffffff?text=TECHIE",
-      "description": "Future developer. Logic & clean code.",
-      "startingStats": {
-        "confidence": 25,
-        "vocabulary": 35,
-        "fluency": 15
-      },
-      "preferredChunks": ["On the same page", "Makes sense", "It tracks"]
+      "id": "tech_01",
+      "name": "Tech Strategist",
+      "avatar": "assets/avatars/tech_01.mp4",
+      "description": "Calm logic, clear speech, modern tech vibe.",
+      "startingStats": { "confidence": 25, "vocabulary": 35, "fluency": 15 },
+      "preferredChunks": ["Makes sense", "It tracks", "On the same page"]
     },
     {
-      "id": "creative",
-      "name": "Mia Design",
-      "avatar": "https://via.placeholder.com/120x120/ec4899/ffffff?text=CREATIVE",
-      "description": "Content creator. Vibe & style master.",
-      "startingStats": {
-        "confidence": 40,
-        "vocabulary": 20,
-        "fluency": 25
-      },
+      "id": "creative_01",
+      "name": "Creative Director",
+      "avatar": "assets/avatars/creative_01.mp4",
+      "description": "Style, storytelling, and confident small talk.",
+      "startingStats": { "confidence": 35, "vocabulary": 25, "fluency": 20 },
       "preferredChunks": ["Low-key", "Fair enough", "Looking forward"]
     },
     {
-      "id": "executive",
-      "name": "James Corp",
-      "avatar": "https://via.placeholder.com/120x120/10b981/ffffff?text=EXEC",
-      "description": "Career climber. Meetings pro.",
-      "startingStats": {
-        "confidence": 35,
-        "vocabulary": 25,
-        "fluency": 20
-      },
-      "preferredChunks": ["Actually", "The point is", "To be honest"]
+      "id": "executive_01",
+      "name": "Executive",
+      "avatar": "assets/avatars/executive_01.mp4",
+      "description": "Meetings, negotiations, and clarity.",
+      "startingStats": { "confidence": 30, "vocabulary": 25, "fluency": 20 },
+      "preferredChunks": ["Actually", "To be honest", "The point is"]
+    },
+    {
+      "id": "product_01",
+      "name": "Product Manager",
+      "avatar": "assets/avatars/product_01.mp4",
+      "description": "Decisions, priorities, and smooth teamwork.",
+      "startingStats": { "confidence": 28, "vocabulary": 30, "fluency": 18 },
+      "preferredChunks": ["Quick question", "Let's align", "Sounds good"]
+    },
+    {
+      "id": "finance_01",
+      "name": "Finance Analyst",
+      "avatar": "assets/avatars/finance_01.mp4",
+      "description": "Numbers, clarity, and confident reports.",
+      "startingStats": { "confidence": 26, "vocabulary": 32, "fluency": 16 },
+      "preferredChunks": ["In short", "To sum up", "That works"]
+    },
+    {
+      "id": "health_01",
+      "name": "Healthcare Professional",
+      "avatar": "assets/avatars/health_01.mp4",
+      "description": "Warm tone, empathy, and clear communication.",
+      "startingStats": { "confidence": 32, "vocabulary": 26, "fluency": 18 },
+      "preferredChunks": ["No worries", "I understand", "Good to know"]
+    },
+    {
+      "id": "legal_01",
+      "name": "Legal Consultant",
+      "avatar": "assets/avatars/legal_01.mp4",
+      "description": "Precise wording and confident delivery.",
+      "startingStats": { "confidence": 30, "vocabulary": 33, "fluency": 14 },
+      "preferredChunks": ["For example", "From my side", "Just to clarify"]
+    },
+    {
+      "id": "traveler_01",
+      "name": "Traveler",
+      "avatar": "assets/avatars/traveler_01.mp4",
+      "description": "Easy conversations and stories.",
+      "startingStats": { "confidence": 34, "vocabulary": 24, "fluency": 22 },
+      "preferredChunks": ["By the way", "That reminds me", "Nice to meet you"]
+    },
+    {
+      "id": "teacher_01",
+      "name": "Teacher",
+      "avatar": "assets/avatars/teacher_01.mp4",
+      "description": "Friendly structure and clear explanations.",
+      "startingStats": { "confidence": 33, "vocabulary": 28, "fluency": 18 },
+      "preferredChunks": ["Let's try", "One more time", "Good job"]
+    },
+    {
+      "id": "hijab_01",
+      "name": "Modest Professional",
+      "avatar": "assets/avatars/hijab_01.mp4",
+      "description": "Confident, modern, modest style.",
+      "startingStats": { "confidence": 30, "vocabulary": 27, "fluency": 20 },
+      "preferredChunks": ["Thank you", "Sounds great", "I appreciate it"]
+    },
+    {
+      "id": "hijab_02",
+      "name": "Modest Creative",
+      "avatar": "assets/avatars/hijab_02.mp4",
+      "description": "Warm presence and stylish communication.",
+      "startingStats": { "confidence": 34, "vocabulary": 23, "fluency": 22 },
+      "preferredChunks": ["Honestly", "I'm excited", "That's lovely"]
+    },
+    {
+      "id": "mascot_01",
+      "name": "Mascot",
+      "avatar": "assets/avatars/mascot_01.mp4",
+      "description": "A playful option — same learning rewards.",
+      "startingStats": { "confidence": 28, "vocabulary": 28, "fluency": 18 },
+      "preferredChunks": ["Hello!", "Let's go", "Nice!"]
     }
   ],
   "quests": {
@@ -42,11 +102,8 @@
       "title": "The First Impression",
       "description": "Introduce yourself to neighbors (use 1 chunk)",
       "requiredChunks": ["Just moved in", "Looking forward", "Low-key nervous"],
-      "reward": {
-        "confidence": 15,
-        "coins": 50,
-        "xp": 35
-      }
+      "reward": { "confidence": 15, "coins": 50, "xp": 35 }
     }
   }
 }
+
