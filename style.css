@@ -271,4 +271,46 @@ button.ghost{
   #game-container{ height:auto; }
   #main-ui{ grid-template-columns: 1fr; grid-template-rows: auto auto auto; }
 }
+/* ==== FIX: character cards should be clickable and not overridden by global button styles ==== */
+
+/* твои char-card — это <button>, но общий button{} мешает */
+.char-card{
+  width: auto;              /* вместо 100% */
+  margin-top: 0;            /* убираем отступ, который добавляет button{} */
+  padding: 12px;
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 16px;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+  display: block;
+}
+
+/* медиа не должно ловить клики */
+.char-media,
+.char-video,
+.char-img{
+  pointer-events: none;
+}
+
+/* видимые заголовки (на скрине они очень бледные) */
+.char-name{
+  color: var(--text);
+}
+.char-desc{
+  color: var(--muted);
+}
+
+/* чтобы фокус был красивый (клавиатура) */
+.char-card:focus-visible{
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(109,40,217,0.18);
+  border-color: rgba(109,40,217,0.35);
+}
+
+/* если у тебя overlay фоновые слои — они не должны перекрывать клики */
+#game-container::before,
+#game-container::after{
+  pointer-events: none;
+}
 
