@@ -1,19 +1,18 @@
-// ========== CONFIG ==========
-const STORAGE_KEY = "linguapolis_save_autofix_v1";
+const STORAGE_KEY = "linguapolis_save_autofix_v2";
 
-// Где искать ассеты (код сам попробует оба варианта)
+// Ищем медиа и так, и так (чтобы не зависеть от того, куда ты положила файлы)
 const IMAGE_FOLDERS = ["assets/avatars", "assets"];
 const VIDEO_FOLDERS = ["assets/videos", "assets"];
-
 const IMG_EXTS = ["webp", "png", "jpg", "jpeg", "gif"];
 const VID_EXTS = ["mp4", "webm"];
 
-// ========== STATE ==========
 let gameData = null;
 let state = null;
 let showVideoInProfile = false;
 
 function $(id) { return document.getElementById(id); }
+function safeEl(id) { return document.getElementById(id) || null; }
+
 function clamp01to100(n) { return Math.max(0, Math.min(100, n)); }
 function xpToNext(level) { return 100 + (level - 1) * 40; }
 
@@ -30,7 +29,9 @@ function loadState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     return raw ? JSON.parse(raw) : null;
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -43,16 +44,19 @@ async function loadGameData() {
 }
 
 function showMainUI() {
-  $("char-selection-overlay").style.display = "none";
-  $("main-ui").style.display = "grid";
+  const overlay = safeEl("char-selection-overlay");
+  const main = safeEl("main-ui");
+  if (overlay) overlay.style.display = "none";
+  if (main) main.style.display = "grid";
 }
 function showSelectionUI() {
-  $("char-selection-overlay").style.display = "flex";
-  $("main-ui").style.display = "none";
+  const overlay = safeEl("char-selection-overlay");
+  const main = safeEl("main-ui");
+  if (overlay) overlay.style.display = "flex";
+  if (main) main.style.display = "none";
 }
 
-// ========== ASSET RESOLVER ==========
-// Попробуем найти существующую картинку/видео по id, перебирая папки и расширения.
+// ---------- asset resolving (ищем существующий файл) ----------
 async function urlExists(url) {
   try {
     const res = await fetch(url, { method: "HEAD", cache: "no-store" });
@@ -90,64 +94,68 @@ async function resolveVideoUrl(key) {
   return null;
 }
 
-async function renderThumbMedia(container, key, label) {
-  // Для сетки выбора персонажа: сначала картинка, если нет — видео
+// ---------- UI helpers ----------
+function setText(id, value) {
+  const el = safeEl(id);
+  if (el) el.textContent = value;
+}
+function setWidth(id, percent) {
+  const el = safeEl(id);
+  if (el) el.style.width = percent;
+}
+
+async function renderThumbInto(holder, key, label) {
   const imgUrl = await resolveImageUrl(key);
   if (imgUrl) {
-    container.innerHTML = `<img class="media-thumb" src="${imgUrl}" alt="${escapeHtml(label)}">`;
+    holder.innerHTML = `<img class="media-thumb" src="${imgUrl}" alt="${escapeHtml(label)}">`;
     return { imgUrl, videoUrl: null };
   }
   const videoUrl = await resolveVideoUrl(key);
   if (videoUrl) {
-    container.innerHTML = `
-      <video class="media-thumb" src="${videoUrl}" autoplay loop muted playsinline preload="metadata"></video>
-    `;
+    holder.innerHTML = `<video class="media-thumb" src="${videoUrl}" autoplay loop muted playsinline preload="metadata"></video>`;
     return { imgUrl: null, videoUrl };
   }
-  container.innerHTML = `<div class="media-thumb" style="display:flex;align-items:center;justify-content:center;font-weight:900;opacity:.6;">No media</div>`;
+  holder.innerHTML = `<div class="media-thumb" style="display:flex;align-items:center;justify-content:center;font-weight:900;opacity:.5;">No media</div>`;
   return { imgUrl: null, videoUrl: null };
 }
 
-async function renderProfileMedia(container, key, label) {
-  // В профиле: по кнопке — показываем видео, иначе картинку. Если видео нет — всегда картинка.
+async function renderProfileMedia(key, label) {
+  const box = safeEl("player-avatar");
+  if (!box) return;
+
+  const btn = safeEl("btn-toggle-media");
+
   const imgUrl = await resolveImageUrl(key);
   const videoUrl = await resolveVideoUrl(key);
 
-  const btn = $("btn-toggle-media");
-  btn.disabled = !videoUrl;
-
-  const showVideo = !!(videoUrl && showVideoInProfile);
-
-  if (showVideo) {
-    container.innerHTML = `
-      <video src="${videoUrl}" autoplay loop muted playsinline preload="metadata"
-        style="width:100%;height:100%;object-fit:cover;"></video>
-    `;
-    btn.textContent = "Image";
-  } else {
-    if (imgUrl) {
-      container.innerHTML = `
-        <img src="${imgUrl}" alt="${escapeHtml(label)}"
-          style="width:100%;height:100%;object-fit:cover;">
-      `;
-    } else if (videoUrl) {
-      // если картинки нет, но видео есть — покажем видео
-      container.innerHTML = `
-        <video src="${videoUrl}" autoplay loop muted playsinline preload="metadata"
-          style="width:100%;height:100%;object-fit:cover;"></video>
-      `;
-      btn.textContent = "Image";
-      showVideoInProfile = true;
-    } else {
-      container.innerHTML = "";
-    }
-    if (!showVideoInProfile) btn.textContent = "Animate";
+  // если кнопки нет в твоём index.html — просто показываем картинку и не падаем
+  if (btn) {
+    btn.disabled = !videoUrl;
+    btn.textContent = showVideoInProfile && videoUrl ? "Image" : "Animate";
   }
 
-  return { imgUrl, videoUrl };
+  if (showVideoInProfile && videoUrl) {
+    box.innerHTML = `<video src="${videoUrl}" autoplay loop muted playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;"></video>`;
+    return;
+  }
+
+  if (imgUrl) {
+    box.innerHTML = `<img src="${imgUrl}" alt="${escapeHtml(label)}" style="width:100%;height:100%;object-fit:cover;">`;
+    return;
+  }
+
+  if (videoUrl) {
+    // если картинки нет, но видео есть
+    box.innerHTML = `<video src="${videoUrl}" autoplay loop muted playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;"></video>`;
+    if (btn) btn.textContent = "Image";
+    showVideoInProfile = true;
+    return;
+  }
+
+  box.innerHTML = "";
 }
 
-// ========== GAME LOGIC ==========
+// ---------- game ----------
 function newStateForCharacter(characterId) {
   const char = gameData.characters.find((x) => x.id === characterId);
   const starting = char?.startingStats || { confidence: 25, vocabulary: 25, fluency: 10 };
@@ -180,14 +188,23 @@ function applyReward(reward) {
 }
 
 function appendChatBubble(text, who = "player") {
-  const box = $("chat-box");
+  const box = safeEl("chat-box");
+  if (!box) return;
   box.innerHTML += `<div class="bubble ${who}">${escapeHtml(text)}</div>`;
   box.scrollTop = box.scrollHeight;
 }
 
 async function renderCharacterGrid() {
-  const grid = $("char-grid");
+  const grid = safeEl("char-grid");
+  if (!grid) return;
+
   grid.innerHTML = "";
+
+  // если вдруг data.json не тот
+  if (!gameData?.characters?.length) {
+    grid.innerHTML = `<div style="opacity:.75;font-weight:800;">No characters found in data.json</div>`;
+    return;
+  }
 
   for (const c of gameData.characters) {
     const btn = document.createElement("div");
@@ -195,10 +212,12 @@ async function renderCharacterGrid() {
 
     const mediaHolder = document.createElement("div");
     mediaHolder.innerHTML = `<div class="media-thumb"></div>`;
-    await renderThumbMedia(mediaHolder, c.id, c.name);
+
+    // важно: имя файла = id персонажа
+    await renderThumbInto(mediaHolder, c.id, c.name || c.id);
 
     const title = document.createElement("div");
-    title.innerHTML = `<strong>${escapeHtml(c.name)}</strong><br><small>${escapeHtml(c.description || "")}</small>`;
+    title.innerHTML = `<strong>${escapeHtml(c.name || c.id)}</strong><br><small>${escapeHtml(c.description || "")}</small>`;
 
     btn.appendChild(mediaHolder);
     btn.appendChild(title);
@@ -212,25 +231,27 @@ async function renderProfile() {
   const char = gameData.characters.find((x) => x.id === state.selectedCharacterId);
   if (!char) return;
 
-  $("player-name").innerText = char.name;
-  $("player-desc").innerText = char.description || "";
+  setText("player-name", char.name || char.id);
+  setText("player-desc", char.description || "");
 
-  await renderProfileMedia($("player-avatar"), char.id, char.name);
+  await renderProfileMedia(char.id, char.name || char.id);
 
-  $("bar-confidence").style.width = clamp01to100(state.stats.confidence) + "%";
-  $("bar-vocab").style.width = clamp01to100(state.stats.vocabulary) + "%";
-  $("bar-fluency").style.width = clamp01to100(state.stats.fluency || 0) + "%";
+  setWidth("bar-confidence", clamp01to100(state.stats.confidence) + "%");
+  setWidth("bar-vocab", clamp01to100(state.stats.vocabulary) + "%");
+  setWidth("bar-fluency", clamp01to100(state.stats.fluency || 0) + "%");
 
-  $("player-level").textContent = state.level;
-  $("player-xp").textContent = state.xp;
-  $("player-xp-next").textContent = xpToNext(state.level);
-  $("player-coins").textContent = state.coins;
+  setText("player-level", state.level);
+  setText("player-xp", state.xp);
+  setText("player-xp-next", xpToNext(state.level));
+  setText("player-coins", state.coins);
 }
 
 function renderQuest() {
+  const content = safeEl("quest-content");
+  if (!content) return;
+
   const questId = state.currentQuestId;
   const quest = questId ? gameData.quests?.[questId] : null;
-  const content = $("quest-content");
 
   if (!quest) {
     content.innerHTML = `<p>No quests yet.</p>`;
@@ -238,24 +259,14 @@ function renderQuest() {
   }
 
   const isDone = state.completedQuests.includes(questId);
-  const char = gameData.characters.find((x) => x.id === state.selectedCharacterId);
 
-  const options = quest.requiredChunks
+  const options = (quest.requiredChunks || [])
     .map((c) => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`)
     .join("");
 
-  const likes = (char?.preferredChunks || [])
-    .map((c) => `<span class="pill">${escapeHtml(c)}</span>`)
-    .join("");
-
   content.innerHTML = `
-    <h4 class="quest-title">${escapeHtml(quest.title)}</h4>
-    <p class="quest-desc">${escapeHtml(quest.description)}</p>
-
-    <div style="margin:8px 0 10px;">
-      <div style="font-weight:900;margin-bottom:6px;">Your sim likes:</div>
-      <div>${likes || "<span style='opacity:.7;'>No preferences yet</span>"}</div>
-    </div>
+    <h4 class="quest-title">${escapeHtml(quest.title || "Quest")}</h4>
+    <p class="quest-desc">${escapeHtml(quest.description || "")}</p>
 
     <label class="label">Pick a chunk:</label>
     <select id="chunk-select" ${isDone ? "disabled" : ""}>${options}</select>
@@ -264,23 +275,25 @@ function renderQuest() {
     <button id="btn-send" ${isDone ? "disabled" : ""}>Send</button>
 
     <div id="quest-feedback" class="hint"></div>
-    <div class="reward">Reward: +Confidence • +Coins • +XP</div>
   `;
 
-  const feedback = $("quest-feedback");
-  if (isDone) feedback.textContent = "✅ Completed";
+  const feedback = safeEl("quest-feedback");
+  if (isDone && feedback) feedback.textContent = "✅ Completed";
 
-  $("btn-send").addEventListener("click", async () => {
-    const typed = $("msg-input").value.trim();
-    const chunk = $("chunk-select").value;
+  const btnSend = safeEl("btn-send");
+  if (!btnSend) return;
+
+  btnSend.addEventListener("click", async () => {
+    const typed = (safeEl("msg-input")?.value || "").trim();
+    const chunk = safeEl("chunk-select")?.value || "";
     if (!typed) return;
 
     appendChatBubble(typed, "player");
     setTimeout(() => appendChatBubble("Welcome! Happy to have you here.", "npc"), 600);
 
-    const ok = typed.toLowerCase().includes(chunk.toLowerCase());
+    const ok = chunk && typed.toLowerCase().includes(chunk.toLowerCase());
     if (!ok) {
-      feedback.textContent = `Try to include the chunk: “${chunk}”`;
+      if (feedback) feedback.textContent = `Try to include the chunk: “${chunk}”`;
       return;
     }
 
@@ -289,7 +302,7 @@ function renderQuest() {
       applyReward(quest.reward);
       saveState();
       await renderProfile();
-      feedback.textContent = "🎉 Quest complete! Rewards applied.";
+      if (feedback) feedback.textContent = "🎉 Quest complete!";
     }
   });
 }
@@ -298,7 +311,8 @@ async function startGame(characterId) {
   state = newStateForCharacter(characterId);
   saveState();
   showMainUI();
-  $("chat-box").innerHTML = "";
+  const chat = safeEl("chat-box");
+  if (chat) chat.innerHTML = "";
   await renderProfile();
   renderQuest();
 }
@@ -311,29 +325,38 @@ async function restoreGame(existingState) {
 }
 
 function attachButtons() {
-  $("btn-reset").addEventListener("click", () => {
-    localStorage.removeItem(STORAGE_KEY);
-    location.reload();
-  });
+  const reset = safeEl("btn-reset");
+  if (reset) {
+    reset.addEventListener("click", () => {
+      localStorage.removeItem(STORAGE_KEY);
+      location.reload();
+    });
+  }
 
-  $("btn-lesson").addEventListener("click", async () => {
-    applyReward({ xp: 35, coins: 10 });
-    saveState();
-    await renderProfile();
-    appendChatBubble("✅ Lesson completed (+XP)", "npc");
-  });
+  const lesson = safeEl("btn-lesson");
+  if (lesson) {
+    lesson.addEventListener("click", async () => {
+      applyReward({ xp: 35, coins: 10 });
+      saveState();
+      await renderProfile();
+      appendChatBubble("✅ Lesson completed (+XP)", "npc");
+    });
+  }
 
-  $("btn-toggle-media").addEventListener("click", async () => {
-    showVideoInProfile = !showVideoInProfile;
-    await renderProfile();
-  });
+  const toggle = safeEl("btn-toggle-media");
+  if (toggle) {
+    toggle.addEventListener("click", async () => {
+      showVideoInProfile = !showVideoInProfile;
+      await renderProfile();
+    });
+  }
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     gameData = await loadGameData();
   } catch (e) {
-    alert("data.json not found or invalid. Check repository root.");
+    alert("data.json not found or invalid JSON.");
     console.error(e);
     return;
   }
