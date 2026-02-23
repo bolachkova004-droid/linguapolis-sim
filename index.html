@@ -4,19 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Linguapolis Sim</title>
-  <link rel="stylesheet" href="style.css?v=4" />
+  <link rel="stylesheet" href="style.css?v=5" />
 </head>
 <body>
   <div id="game-container">
 
-    <div id="char-grid" class="char-grid"></div>
-
+    <!-- Character selection overlay -->
+    <div id="char-selection-overlay">
+      <div class="selection-card">
         <h1>Choose your Linguapolis Sim</h1>
-        <p>Select your path to master English</p>
-        <div id="char-grid"></div>
+        <p class="selection-subtitle">Select your path to master English</p>
+        <div id="char-grid" class="char-grid"></div>
       </div>
     </div>
 
+    <!-- Main app UI (hidden until character selected) -->
     <main id="main-ui" style="display:none;">
       <aside class="left-panel">
         <div class="profile-card">
@@ -65,9 +67,9 @@
         </div>
       </aside>
     </main>
+
   </div>
 
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
-
