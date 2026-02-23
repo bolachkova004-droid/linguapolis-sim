@@ -4,12 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Linguapolis Sim</title>
-  <link rel="stylesheet" href="style.css?v=5" />
+  <link rel="stylesheet" href="style.css?v=10" />
 </head>
 <body>
   <div id="game-container">
 
-    <!-- Character selection overlay -->
+    <!-- Character selection -->
     <div id="char-selection-overlay">
       <div class="selection-card">
         <h1>Choose your Linguapolis Sim</h1>
@@ -18,7 +18,7 @@
       </div>
     </div>
 
-    <!-- Main app UI (hidden until character selected) -->
+    <!-- Main UI -->
     <main id="main-ui" style="display:none;">
       <aside class="left-panel">
         <div class="profile-card">
@@ -27,12 +27,12 @@
           <p id="player-desc">Description</p>
 
           <div class="meta">
-            <div class="meta-item">Level: <span id="player-level">1</span></div>
-            <div class="meta-item">XP: <span id="player-xp">0</span>/<span id="player-xp-next">100</span></div>
-            <div class="meta-item">Coins: <span id="player-coins">0</span> 🪙</div>
+            <div class="meta-item"><span>Level</span><span id="player-level">1</span></div>
+            <div class="meta-item"><span>XP</span><span><span id="player-xp">0</span>/<span id="player-xp-next">100</span></span></div>
+            <div class="meta-item"><span>Coins</span><span id="player-coins">0 🪙</span></div>
           </div>
 
-          <button id="btn-reset" class="ghost">Reset</button>
+          <button id="btn-reset" class="ghost" type="button">Reset</button>
         </div>
 
         <div class="stats-card">
@@ -51,7 +51,7 @@
             <div class="progress-bg"><div id="bar-fluency" class="progress-fill"></div></div>
           </div>
 
-          <button id="btn-lesson">✅ Finish lesson (+XP)</button>
+          <button id="btn-lesson" type="button">✅ Finish lesson (+XP)</button>
         </div>
       </aside>
 
@@ -62,7 +62,7 @@
 
       <aside class="quest-section">
         <div class="quest-card">
-          <h3>Current Quest</h3>
+          <h3 class="quest-title">Current Quest</h3>
           <div id="quest-content"></div>
         </div>
       </aside>
@@ -70,6 +70,6 @@
 
   </div>
 
-  <script src="script.js"></script>
+  <script src="script.js?v=10"></script>
 </body>
 </html>
